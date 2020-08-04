@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Fragment } from 'react'
+import axios from 'axios'
+import UserCard from './Components/UserCard'
+import FollowersList from './Components/FollowersList'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export class App extends Component {
+  constructor(){
+    super();
+    this.state={
+      followers:[],
+      user:{}
+    }
+  }
+
+  componentDidMount(){
+    axios.get('https://api.github.com/users/jdulay91')
+    .then(res=>{
+      this.setState({user:res.data})
+             
+    })
+    axios.get('https://api.github.com/users/jdulay91/followers')
+    .then(followers=>{
+      this.setState({followers:followers.data})
+      console.log(this.state.followers)          
+    })
+
+  }
+  render() {
+    return (
+      <Fragment>
+        <UserCard user={this.state.user} />
+        <FollowersList followers={this.state.followers}/>        
+      </Fragment>
+    )
+  }
 }
 
-export default App;
+export default App
